@@ -14,7 +14,7 @@ int main(int argc, char **argv)
 	srand(time(0));
 	for(i=0;i<200;++i)
 	{
-		printf("%c",s[random()%sizeof(s)]);
+		printf("%c",s[random()%(sizeof(s)-1)]);
 	}
 	return 0;
 }
