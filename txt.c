@@ -10,10 +10,11 @@
 int main(int argc, char **argv)
 {
 	int i;
+	char s[]="1234567890&|+-*/%^";
 	srand(time(0));
 	for(i=0;i<200;++i)
 	{
-		printf("%c",random()%(0x7F-0x21)+0x21);
+		printf("%c",s[random()%sizeof(s)]);
 	}
 	return 0;
 }

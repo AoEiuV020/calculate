@@ -7,22 +7,33 @@
 #include <iostream>
 #include <list>
 #include <string>
+#include <map>
 using namespace std;
+map<char,unsigned int> priority;
+void initpri(const map<char,unsigned int> &pri)
+{
+	string spri="&2|2+3-3*4/4%4^5";
+	for(unsigned int i=0;i<spri.length();i+=2)
+	{
+		priority[spri[i]]=spri[i+1]-'0';
+	}
+}
 bool isvar(const char &ch)
 {
 	return (((ch)>='0'&&(ch)<='9')||((ch)>='a'&&(ch)<='z')||((ch)>='A'&&(ch)<='Z'));
 }
-bool low(const char &low,const char &high)
+bool high(const char &high,const char &low)
 {
-	return low<high;
+	return priority[high]>=priority[low];
 }
 int main(int argc, char **argv)
 {
 	string str;
+	initpri(priority);
 	list<char> li;
 	getline(cin,str);
 	cout<<"::::"<<str<<"::::"<<endl;
-	for(char ch:str)
+	for(const char &ch:str)
 	{
 		
 		if(isvar(ch))/*number or alpha...*/
@@ -36,7 +47,7 @@ int main(int argc, char **argv)
 		else
 		{
 			char front;
-			if(!li.empty()&&low(front=li.front(),ch))
+			if(!li.empty()&&high(front=li.front(),ch))
 			{
 				cout<<front;
 				li.pop_front();
@@ -44,7 +55,7 @@ int main(int argc, char **argv)
 			li.push_front(ch);
 		}
 	}
-	for(char ch:li)
+	for(const char &ch:li)
 	{
 		cout<<ch;
 	}
