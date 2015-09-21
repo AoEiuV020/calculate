@@ -1,5 +1,5 @@
 include header.mk
-n=d
+n=m
 #$(n).$(TAREXT):$(n).cpp
 all:
 	g++ -Wall -Wpedantic --std=c++11 --save-temps -o $(n).$(TAREXT) $(n).cpp

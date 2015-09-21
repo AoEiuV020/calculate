@@ -8,8 +8,17 @@
 #include <string>
 #include <map>
 using namespace std;
+void scan(const string &input)
+{
+	const string op="&|-";
+}
+void calc(const string &input){}
 int main(int argc, char **argv)
 {
 	string input;
+	getline(cin,input);
+	scan(input);
+	calc(input);
+	cout<<input<<endl;
 	return 0;
 }
