@@ -225,14 +225,12 @@ void truthtable(list<char> infix)
 // */
 void junctive()
 {
-        bool real;
         ostringstream conjunctive,disjunctive;
         conjunctive<<"T";
         disjunctive<<"F";
         for(int i=0;!truthlist.empty();++i)
         {
-                real=truthlist.front();
-                if(real)
+                if(truthlist.front())
                 {
                         conjunctive<<"\\/"<<"m("<<i<<")";
                 }
