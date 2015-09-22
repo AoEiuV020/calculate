@@ -135,20 +135,19 @@ list<char> tran(const string &bin)
 // */
 bool calculate(const list<char> &infix)
 {
-        stack<char> result;
-        char last1, last2;
-        bool real;
+        stack<bool> result;
+        bool last1, last2;
         for (const char &ch : infix)
         {
                 if (isvar(ch))
                 {
-                        result.push(variable[ch] ? 'T' : 'F');
+                        result.push(variable[ch]);
                 }
                 else if ('!' == ch)
                 {
                         last1 = result.top();
                         result.pop();
-                        result.push(!variable[last1] ? 'T' : 'F');
+                        result.push(!last1);
                 }
                 else
                 {
@@ -156,21 +155,22 @@ bool calculate(const list<char> &infix)
                         result.pop();
                         last2 = result.top();
                         result.pop();
+                        bool real;
                         switch (ch)
                         {
                         case '&':
-                                real = variable[last1] && variable[last2];
+                                real = last1 && last2;
                                 break;
                         case '|':
-                                real = variable[last1] || variable[last2];
+                                real = last1 || last2;
                                 break;
                         default:
                                 real = false;
                         }
-                        result.push(real ? 'T' : 'F');
+                        result.push(real);
                 }
         }
-        return result.top() == 'T' ? true : false;
+        return result.top() ;
 }
 /*
    next case...
