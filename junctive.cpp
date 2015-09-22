@@ -19,7 +19,7 @@ void init();
 void hint();
 bool isvar(const char &ch);
 bool highpri(const char &high, const char &low);
-list<char> tran(const string &bin);
+list<char> tran(const string &infix);
 bool calculate(const list<char> &infix);
 bool next();
 void truthtable(list<char> infix);
@@ -89,15 +89,15 @@ bool highpri(const char &high, const char &low)
 /*
    transform from infix expression to suffix expression...
 // */
-list<char> tran(const string &bin)
+list<char> tran(const string &infix)
 {
-        list<char> infix;
-        stack<char> op;
-        for (const char &ch : bin)
+        list<char> suffix;
+        stack<char> op;//stack operator...
+        for (const char &ch : infix)
         {
                 if (isvar(ch))
                 {
-                        infix.push_back(ch);
+                        suffix.push_back(ch);
                         if (ch != 'T'&&ch != 'F')
                         {
                                 variable[ch] = false;//map variable...
@@ -108,7 +108,7 @@ list<char> tran(const string &bin)
 
                         while ('(' != op.top())
                         {
-                                infix.push_back(op.top());
+                                suffix.push_back(op.top());
                                 op.pop();
                         }
                         op.pop();
@@ -117,7 +117,7 @@ list<char> tran(const string &bin)
                 {
                         if (!op.empty() && highpri(op.top(), ch))
                         {
-                                infix.push_back(op.top());
+                                suffix.push_back(op.top());
                                 op.pop();
                         }
                         op.push(ch);
@@ -125,10 +125,10 @@ list<char> tran(const string &bin)
         }
         while (!op.empty())
         {
-                infix.push_back(op.top());
+                suffix.push_back(op.top());
                 op.pop();
         }
-        return infix;
+        return suffix;
 }
 /*
         calulate truth-value ,with suffix expression...
@@ -226,17 +226,55 @@ void truthtable(list<char> infix)
 void junctive()
 {
         ostringstream conjunctive,disjunctive;
-        conjunctive<<"T";
-        disjunctive<<"F";
-        for(int i=0;!truthlist.empty();++i)
+        bool flag1=false,flag2=false;
+        map<char,bool>::size_type varnum=variable.size();
+        for(unsigned long long int i=0,j;!truthlist.empty();++i)
         {
                 if(truthlist.front())
                 {
-                        conjunctive<<"\\/"<<"m("<<i<<")";
+                        conjunctive<<((flag1)?"\\/":flag1=true,"")<<"(";
+                        j=0;
+                        for (map<char, bool>::const_iterator it = variable.begin(); it != variable.end(); ++it)
+                        {
+                            ++j;
+                            if(it->first=='T'||it->first=='F')
+                            {
+                                continue;
+                            }
+                            if(!(i&(1<<varnum>>(j))))
+                            {
+                                conjunctive<<"-";
+                            }
+                            conjunctive<<it->first;
+                            if(j!=varnum)
+                            {
+                                conjunctive<<"/\\";
+                            }
+                        }
+                        conjunctive<<")";
                 }
                 else
                 {
-                        disjunctive<<"/\\"<<"M("<<i<<")";
+                        disjunctive<<((flag2)?"/\\":flag2=true,"")<<"(";
+                        j=0;
+                        for (map<char, bool>::const_iterator it = variable.begin(); it != variable.end(); ++it)
+                        {
+                            ++j;
+                            if(it->first=='T'||it->first=='F')
+                            {
+                                continue;
+                            }
+                            if(i&(1<<varnum>>(j)))
+                            {
+                                disjunctive<<"-";
+                            }
+                            disjunctive<<it->first;
+                            if(j!=varnum)
+                            {
+                                disjunctive<<"\\/";
+                            }
+                        }
+                        disjunctive<<")";
                 }
                 truthlist.pop();
         }
